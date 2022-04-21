@@ -5,13 +5,21 @@ const requestListener = (request, response) => {
  
     response.statusCode = 200;
 
-    const { method } = request;
+    const { url, method } = request;
 
-    if(method == 'GET'){
-        response.end("<h1>Hello!</h1>");
-    }
+    if(url === '/'){
+        // todo 2
+        if(method === 'GET'){
+            response.end('Ini adalah homepage');
+        }else{
+            response.end(`Halaman tidak dapat diakses dengan ${request.method} request`);
+        }
 
-    if(method == 'POST'){
+    }else if(url === '/about'){
+        // todo 3
+        if(method === 'GET'){
+            response.end('Hallo! Ini adalah halaman about');
+        }else if(method === 'POST'){
         let body = [];
 
         request.on('data', (chunk) => {
@@ -21,8 +29,14 @@ const requestListener = (request, response) => {
         request.on('end', () => {
             body = Buffer.concat(body).toString();
             const { name } = JSON.parse(body);
-            response.end(`<h1>Hai, ${name}!</h1>`);
+            response.end(`Hallo, ${name}!`);
         });
+        }else{
+            response.end(`Halaman tidak dapat diakses dengan ${method} request`);
+        }
+    }else{
+        // todo 1
+        response.end('<h1>Halaman tidak ditemukan!</h1>');
     }
 };
 
